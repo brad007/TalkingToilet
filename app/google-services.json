@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "557813729633",
+    "firebase_url": "https://talking-toilet.firebaseio.com",
+    "project_id": "talking-toilet",
+    "storage_bucket": "talking-toilet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557813729633:android:fe08c823e01e9dce",
+        "android_client_info": {
+          "package_name": "com.software.fire.talkingtoilet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "557813729633-u01fndrl1i6qelglskutd8as7ute307c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdE1PN2zOKTt4uIJFmzjRYoTW_xi7iAF0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
