@@ -6,4 +6,7 @@
     <string name="choice">Method of choice?</string>
     <string name="thinking">What are you thinking of?</string>
     <string name="title_activity_view_results">ViewResultsActivity</string>
+    <string name="method_result">Everyone\'s method of choice</string>
+    <string name="thinking_result">Most people are thinking the following</string>
+    <string name="location_stats">Locations Stats</string>
 </resources>

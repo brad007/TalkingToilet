@@ -1,10 +1,12 @@
 package com.software.fire.talkingtoilet.model;
 
+import java.util.HashMap;
+
 /**
  * Created by Brad on 12/3/2016.
  */
 
-public class TalkingToiletModel {
+public class TalkingToiletModel extends HashMap<String, Boolean> {
     private boolean isCrumpled;
     private String thinking;
 
