@@ -38,6 +38,7 @@ public class ViewResultsActivity extends AppCompatActivity {
         setupThinking();
     }
 
+    //preset the radio buttons
     private void setupMethod() {
         DatabaseReference methodRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.STATS);
@@ -59,6 +60,7 @@ public class ViewResultsActivity extends AppCompatActivity {
         });
     }
 
+    //presets the thinking editText
     private void setupThinking() {
         DatabaseReference thinkingRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.TALKING_TOILET);
@@ -87,6 +89,7 @@ public class ViewResultsActivity extends AppCompatActivity {
         });
     }
 
+    //sets up the location text
     private void setupLocation(final long n) {
         DatabaseReference locationRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.LOCATION_STATS);

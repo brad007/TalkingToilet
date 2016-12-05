@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    //Creating variables
     private RadioButton mCrumpleRB;
     private RadioButton mFoldRB;
     private EditText mThinkingET;
@@ -80,40 +81,44 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showProgressDialog();
-                String thoughts = mThinkingET.getText().toString();
-
-                String UID = Utils.getUID();
-                TalkingToiletModel model = new TalkingToiletModel();
-
-                model.setIsCrumpled(isCrumpled + "");
-                model.setThoughts(thoughts);
-                model.setUid(UID);
-
-                DatabaseReference talkingToiletRef = FirebaseDatabase.getInstance()
-                        .getReference(Constants.TALKING_TOILET).child(UID);
-
-
-                talkingToiletRef.setValue(model)
-                        .addOnSuccessListener(MainActivity.this, new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                pd.hide();
-                                startActivity(new Intent(MainActivity.this, ViewResultsActivity.class));
-                            }
-                        }).addOnFailureListener(MainActivity.this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, "Unable to send information", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                updateStats();
-                updateLocationStats();
-
-
+                sendFormDataToFirebase();
             }
         });
+    }
+
+    private void sendFormDataToFirebase(){
+        showProgressDialog();
+        String thoughts = mThinkingET.getText().toString();
+
+        String UID = Utils.getUID();
+        TalkingToiletModel model = new TalkingToiletModel();
+
+        model.setIsCrumpled(isCrumpled + "");
+        model.setThoughts(thoughts);
+        model.setUid(UID);
+
+        DatabaseReference talkingToiletRef = FirebaseDatabase.getInstance()
+                .getReference(Constants.TALKING_TOILET).child(UID);
+
+
+        talkingToiletRef.setValue(model)
+                .addOnSuccessListener(MainActivity.this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        pd.hide();
+                        startActivity(new Intent(MainActivity.this, ViewResultsActivity.class));
+                    }
+                }).addOnFailureListener(MainActivity.this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Unable to send information", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        updateStats();
+        updateLocationStats();
+
+
     }
 
     private void showProgressDialog() {
@@ -123,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements
         pd.show();
     }
 
+    //Updating stats such us increasing the number of folded,crumbled and participants
     private void updateStats() {
         DatabaseReference statsRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.STATS);
@@ -162,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    //updating the "list" of locations where uses have completed the form as well as how many
+    //has completed it in the same location
     private void updateLocationStats() {
         DatabaseReference locationStatsRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.LOCATION_STATS)
@@ -189,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    //getting readable address from latitude and longitude
     private String getAddress(double latitude, double longitude) {
         Geocoder geocoder;
         List<Address> addresses;
@@ -260,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        //do nothing
     }
 
     @Override
