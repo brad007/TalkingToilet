@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,7 +13,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.software.fire.talkingtoilet.R;
 import com.software.fire.talkingtoilet.model.StatsModel;
-import com.software.fire.talkingtoilet.model.TalkingToiletModel;
 import com.software.fire.talkingtoilet.utils.Constants;
 
 import java.util.HashMap;
@@ -44,10 +44,12 @@ public class ViewResultsActivity extends AppCompatActivity {
         methodRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                StatsModel model = dataSnapshot.getValue(StatsModel.class);
-                mFoldedResultTV.setText("Folded " + ((model.getNumberOfFolded() * 100) / model.getNumberOfParticipants()) + "%");
-                mCrumpledResultTV.setText("Crumpled " + ((model.getNumberOfCrumpled() * 100) / model.getNumberOfParticipants()) + "%");
-                setupLocation(model.getNumberOfParticipants());
+                if (dataSnapshot.getValue() != null) {
+                    StatsModel model = dataSnapshot.getValue(StatsModel.class);
+                    mFoldedResultTV.setText("Folded " + ((model.getNumberOfFolded() * 100) / model.getNumberOfParticipants()) + "%");
+                    mCrumpledResultTV.setText("Crumpled " + ((model.getNumberOfCrumpled() * 100) / model.getNumberOfParticipants()) + "%");
+                    setupLocation(model.getNumberOfParticipants());
+                }
             }
 
             @Override
@@ -60,18 +62,21 @@ public class ViewResultsActivity extends AppCompatActivity {
     private void setupThinking() {
         DatabaseReference thinkingRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.TALKING_TOILET);
-        thinkingRef.limitToLast(3).addListenerForSingleValueEvent(new ValueEventListener() {
+        thinkingRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String result = "";
-                HashMap<String, TalkingToiletModel> map = (HashMap<String, TalkingToiletModel>) dataSnapshot.getValue();
-                for (Map.Entry<String, TalkingToiletModel> entry : map.entrySet()) {
-                    // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                    HashMap<String, Boolean> model = entry.getValue();
-                    result += model.get("thinking") + ", ";
-                }
-                result += "etc";
+                if (dataSnapshot.getValue() != null) {
+                    HashMap<String, HashMap<String, String>> map = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                    for (Map.Entry<String, HashMap<String, String>> entry : map.entrySet()) {
+                        HashMap<String, String> model = entry.getValue();
+                        result += model.get(Constants.THOUGHTS) + ", ";
+                    }
 
+                    result += "etc";
+                } else {
+                    Toast.makeText(ViewResultsActivity.this, "null", Toast.LENGTH_SHORT).show();
+                }
                 mThinkingResultTV.setText(result);
             }
 
@@ -89,13 +94,15 @@ public class ViewResultsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String result = "";
-                HashMap<String, Long> map = (HashMap<String, Long>) dataSnapshot.getValue();
-                for (Map.Entry<String, Long> entry : map.entrySet()) {
-                    // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                    result += ((entry.getValue() * 100) / n + "% " + entry.getKey() + "\n\n");
-                }
+                if (dataSnapshot.getValue() != null) {
+                    HashMap<String, Long> map = (HashMap<String, Long>) dataSnapshot.getValue();
+                    for (Map.Entry<String, Long> entry : map.entrySet()) {
+                        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                        result += ((entry.getValue() * 100) / n + "% " + entry.getKey() + "\n\n");
+                    }
 
-                mLocationResultTV.setText(result.substring(0, result.length() - 2));
+                    mLocationResultTV.setText(result.substring(0, result.length() - 2));
+                }
             }
 
             @Override
@@ -111,7 +118,6 @@ public class ViewResultsActivity extends AppCompatActivity {
         mThinkingResultTV = (TextView) findViewById(R.id.thinking_result_tv);
         mLocationResultTV = (TextView) findViewById(R.id.location_result_tv);
     }
-
 
 
 }

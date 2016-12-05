@@ -18,14 +18,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,7 @@ import com.software.fire.talkingtoilet.R;
 import com.software.fire.talkingtoilet.model.StatsModel;
 import com.software.fire.talkingtoilet.model.TalkingToiletModel;
 import com.software.fire.talkingtoilet.utils.Constants;
+import com.software.fire.talkingtoilet.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,19 +81,30 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 showProgressDialog();
-                TalkingToiletModel model = new TalkingToiletModel();
                 String thoughts = mThinkingET.getText().toString();
 
-                model.setCrumpled(isCrumpled);
-                model.setThinking(thoughts);
+                String UID = Utils.getUID();
+                TalkingToiletModel model = new TalkingToiletModel();
+
+                model.setIsCrumpled(isCrumpled + "");
+                model.setThoughts(thoughts);
+                model.setUid(UID);
 
                 DatabaseReference talkingToiletRef = FirebaseDatabase.getInstance()
-                        .getReference(Constants.TALKING_TOILET).push();
+                        .getReference(Constants.TALKING_TOILET).child(UID);
 
-                talkingToiletRef.setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                talkingToiletRef.setValue(model)
+                        .addOnSuccessListener(MainActivity.this, new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                pd.hide();
+                                startActivity(new Intent(MainActivity.this, ViewResultsActivity.class));
+                            }
+                        }).addOnFailureListener(MainActivity.this, new OnFailureListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        startActivity(new Intent(MainActivity.this, ViewResultsActivity.class));
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Unable to send information", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -102,12 +116,13 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void showProgressDialog(){
-        ProgressDialog pd = new ProgressDialog(MainActivity.this);
+    private void showProgressDialog() {
+        pd = new ProgressDialog(MainActivity.this);
         pd.setMessage("Calculating Results");
         pd.setCancelable(false);
         pd.show();
     }
+
     private void updateStats() {
         DatabaseReference statsRef = FirebaseDatabase.getInstance()
                 .getReference(Constants.STATS);
