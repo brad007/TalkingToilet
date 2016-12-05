@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.software.fire.talkingtoilet.MainActivity"
+    tools:context="com.software.fire.talkingtoilet.ui.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <android.support.v7.widget.CardView
@@ -24,23 +24,29 @@
             android:orientation="vertical">
 
             <TextView
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Method of choice?" />
+                android:text="@string/choice" />
 
-            <CheckedTextView
-                android:id="@+id/foldctv"
+            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Fold" />
+                android:orientation="vertical">
 
-            <CheckedTextView
-                android:id="@+id/crumplectv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Crumple" />
+                <RadioButton
+                    android:id="@+id/folded_radio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fold" />
+
+                <RadioButton
+                    android:id="@+id/crumple_radio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crumple" />
+            </RadioGroup>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -58,9 +64,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="What are you thinking of?" />
+                android:text="@string/thinking" />
 
             <EditText
                 android:id="@+id/thinkinget"

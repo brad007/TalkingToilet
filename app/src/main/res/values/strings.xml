@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Talking Toilet</string>
     <string name="action_settings">Settings</string>
+    <string name="fold">Fold</string>
+    <string name="crumple">Crumple</string>
+    <string name="choice">Method of choice?</string>
+    <string name="thinking">What are you thinking of?</string>
+    <string name="title_activity_view_results">ViewResultsActivity</string>
 </resources>
